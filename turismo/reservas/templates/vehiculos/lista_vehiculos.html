@@ -1,0 +1,554 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lista de Vehículos - Service Coronado{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50/30 to-purple-50/30 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8" data-aos="fade-down">
+            <div class="mb-4 lg:mb-0">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-car text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl lg:text-4xl font-black text-gray-800">Gestión de Vehículos</h1>
+                        <p class="text-gray-600">Administra y supervisa toda la flota de vehículos</p>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'crear_vehiculo' %}" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 px-6 py-3 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <i class="fas fa-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                Nuevo Vehículo
+            </a>
+        </div>
+
+        <!-- Mensajes de Django -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="animate__animated animate__fadeInDown {% if message.tags == 'success' %}bg-green-50 border-l-4 border-green-500 text-green-700{% elif message.tags == 'error' %}bg-red-50 border-l-4 border-red-500 text-red-700{% else %}bg-blue-50 border-l-4 border-blue-500 text-blue-700{% endif %} p-4 rounded-2xl mb-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 {% if message.tags == 'success' %}bg-green-100 text-green-500{% elif message.tags == 'error' %}bg-red-100 text-red-500{% else %}bg-blue-100 text-blue-500{% endif %} rounded-full flex items-center justify-center mr-3">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-aos="fade-up">
+            <!-- Total Vehículos -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Total Vehículos</p>
+                        <h3 class="text-3xl font-black text-gray-800 mt-2">{{ vehiculos.count }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-car text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-500 text-sm">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    <span>Creciendo la flota</span>
+                </div>
+            </div>
+
+            <!-- Vehículos Activos -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Vehículos Activos</p>
+                        <h3 class="text-3xl font-black text-green-600 mt-2">{{ vehiculos_activos }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-500 text-sm">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    <span>Disponibles para viajes</span>
+                </div>
+            </div>
+
+            <!-- En Mantenimiento -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">En Mantenimiento</p>
+                        <h3 class="text-3xl font-black text-red-600 mt-2">{{ vehiculos_mantenimiento }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-tools text-red-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-red-500 text-sm">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    <span>Requieren atención</span>
+                </div>
+            </div>
+
+            <!-- Sin Conductor -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Sin Conductor</p>
+                        <h3 class="text-3xl font-black text-yellow-600 mt-2">{{ sin_conductor|default:"0" }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-user-slash text-yellow-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-yellow-500 text-sm">
+                    <i class="fas fa-id-card-alt mr-1"></i>
+                    <span>Necesitan asignación</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="glass-morphism rounded-3xl shadow-2xl overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+            <!-- Table Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-list text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-black text-white">Todos los Vehículos</h2>
+                            <p class="text-blue-100 text-sm">{{ vehiculos.count }} vehículos en la flota</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <input type="text" placeholder="Buscar vehículo..." class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
+                            <i class="fas fa-search absolute right-3 top-3 text-blue-200"></i>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <select class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white">
+                                <option value="">Todos los estados</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                                <option value="mantenimiento">En Mantenimiento</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Body -->
+            <div class="p-6">
+                {% if vehiculos %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Vehículo</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Placa & Año</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Conductor</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Capacidad</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Mantenimiento</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Estado</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Registro</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for vehiculo in vehiculos %}
+                            <tr class="hover:bg-blue-50/30 transition-colors duration-200 group">
+                                <!-- Información del Vehículo -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-car text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                                {{ vehiculo.marca }} {{ vehiculo.modelo }}
+                                            </h3>
+                                            <p class="text-xs text-gray-500">{{ vehiculo.get_tipo_display }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Placa & Año -->
+                                <td class="py-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <div class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs font-mono font-bold">
+                                                {{ vehiculo.placa }}
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-calendar text-xs mr-2 text-green-500"></i>
+                                            {{ vehiculo.año }}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Conductor -->
+                                <td class="py-4">
+                                    {% if vehiculo.conductor %}
+                                    <div class="space-y-2">
+                                        <div class="font-bold text-gray-800">{{ vehiculo.conductor.nombre }}</div>
+                                        <div class="flex items-center text-xs text-gray-500">
+                                            <i class="fas fa-id-card text-green-500 mr-1"></i>
+                                            {{ vehiculo.conductor.licencia }}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
+                                        <i class="fas fa-user-slash text-[8px] mr-1"></i>
+                                        Sin asignar
+                                    </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Capacidad -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex flex-col items-center">
+                                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+                                                {{ vehiculo.capacidad }}
+                                            </span>
+                                            <span class="text-xs text-gray-500 mt-1">Personas</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Mantenimiento -->
+                                <td class="py-4">
+                                    {% if vehiculo.mantenimiento_proximo %}
+                                        {% if vehiculo.necesita_mantenimiento %}
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 animate-pulse">
+                                            <i class="fas fa-exclamation-triangle text-[8px] mr-1"></i>
+                                            {{ vehiculo.mantenimiento_proximo|date:"d/m/Y" }}
+                                        </span>
+                                        {% else %}
+                                        <div class="text-sm text-gray-600">
+                                            <div>{{ vehiculo.mantenimiento_proximo|date:"d/m/Y" }}</div>
+                                            <div class="text-xs text-gray-400">Próximo</div>
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700">
+                                        <i class="fas fa-tools text-[8px] mr-1"></i>
+                                        No programado
+                                    </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Estado -->
+                                <td class="py-4">
+                                    {% if vehiculo.activo %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                        <i class="fas fa-circle text-[8px] mr-1"></i>
+                                        Activo
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                        <i class="fas fa-circle text-[8px] mr-1"></i>
+                                        Inactivo
+                                    </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Registro -->
+                                <td class="py-4">
+                                    <div class="text-sm text-gray-600">
+                                        <div>{{ vehiculo.creado|date:"d/m/Y" }}</div>
+                                        <div class="text-xs text-gray-400">{{ vehiculo.creado|date:"H:i" }}</div>
+                                    </div>
+                                </td>
+
+                                <!-- Acciones -->
+                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-200">
+                    <div class="text-sm text-gray-600">
+                        Mostrando <span class="font-semibold">1-{{ vehiculos.count }}</span> de <span class="font-semibold">{{ vehiculos.count }}</span> vehículos
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-chevron-left text-gray-600 text-sm"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center font-semibold">
+                            1
+                        </button>
+                        <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-chevron-right text-gray-600 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-12" data-aos="zoom-in">
+                    <div class="w-24 h-24 bg-gradient-to-br from-blue-200 to-purple-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-car text-blue-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-600 mb-3">No hay vehículos registrados</h3>
+                    <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                        Comienza construyendo tu flota de vehículos. Agrega tu primer vehículo para empezar a gestionar viajes.
+                    </p>
+                    <a href="{% url 'crear_vehiculo' %}" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 inline-flex items-center px-6 py-3 text-white font-bold rounded-2xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        <i class="fas fa-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                        Agregar Primer Vehículo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions Footer -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up" data-aos-delay="400">
+            <!-- Export Data -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer" onclick="exportarVehiculos()">
+                <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-file-export text-blue-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Exportar Lista</h4>
+                <p class="text-gray-600 text-sm">Descarga datos en Excel/PDF</p>
+            </div>
+
+            <!-- Maintenance Schedule -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer" onclick="verMantenimiento()">
+                <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-alt text-green-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Mantenimiento</h4>
+                <p class="text-gray-600 text-sm">Programar mantenimiento</p>
+            </div>
+
+            <!-- Reports -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer" onclick="verReportesVehiculos()">
+                <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chart-pie text-purple-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Reportes</h4>
+                <p class="text-gray-600 text-sm">Estadísticas de la flota</p>
+            </div>
+        </div>
+
+        <!-- Vehicle Distribution -->
+        <div class="mt-8 glass-morphism rounded-3xl p-6 shadow-2xl" data-aos="fade-up" data-aos-delay="600">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-chart-bar text-white text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-gray-800">Distribución por Tipo</h3>
+                    <p class="text-gray-600 text-sm">Composición de la flota por tipo de vehículo</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-2xl">
+                    <div class="text-2xl font-black text-blue-600">{{ sedan_count|default:"0" }}</div>
+                    <div class="text-sm text-blue-700 font-semibold">Sedán</div>
+                    <div class="text-xs text-blue-500">4-5 personas</div>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-2xl">
+                    <div class="text-2xl font-black text-green-600">{{ suv_count|default:"0" }}</div>
+                    <div class="text-sm text-green-700 font-semibold">SUV</div>
+                    <div class="text-xs text-green-500">5-7 personas</div>
+                </div>
+                <div class="text-center p-4 bg-yellow-50 rounded-2xl">
+                    <div class="text-2xl font-black text-yellow-600">{{ van_count|default:"0" }}</div>
+                    <div class="text-sm text-yellow-700 font-semibold">Van</div>
+                    <div class="text-xs text-yellow-500">8-15 personas</div>
+                </div>
+                <div class="text-center p-4 bg-red-50 rounded-2xl">
+                    <div class="text-2xl font-black text-red-600">{{ bus_count|default:"0" }}</div>
+                    <div class="text-sm text-red-700 font-semibold">Bus</div>
+                    <div class="text-xs text-red-500">16+ personas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom table styles */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th, td {
+    padding: 1rem 0.5rem;
+}
+
+th:first-child, td:first-child {
+    padding-left: 1rem;
+}
+
+th:last-child, td:last-child {
+    padding-right: 1rem;
+}
+
+/* Smooth transitions */
+.glass-morphism {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects for cards */
+.card-hover:hover {
+    transform: translateY(-4px);
+}
+
+/* Tooltip styling */
+.relative .absolute {
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Animation for urgent maintenance */
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.querySelector('input[type="text"]');
+    const tableRows = document.querySelectorAll('tbody tr');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Filter by status
+    const statusSelect = document.querySelector('select');
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+            const status = this.value;
+            if (status) {
+                // Filter table rows based on status
+                tableRows.forEach(row => {
+                    const statusText = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+                    if (status === 'activo' && statusText.includes('activo')) {
+                        row.style.display = '';
+                    } else if (status === 'inactivo' && statusText.includes('inactivo')) {
+                        row.style.display = '';
+                    } else if (status === 'mantenimiento') {
+                        const mantenimientoText = row.querySelector('td:nth-child(5)').textContent;
+                        if (mantenimientoText.includes('Urgente') || mantenimientoText.includes('Próximo')) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            } else {
+                // Show all rows
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                });
+            }
+        });
+    }
+
+    // Add smooth animations to table rows
+    tableRows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+        row.classList.add('animate__animated', 'animate__fadeInUp');
+    });
+
+    // Tooltip functionality
+    const tooltipButtons = document.querySelectorAll('button[class*="group/tooltip"], a[class*="group/tooltip"]');
+    tooltipButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            const tooltip = this.querySelector('span');
+            if (tooltip) {
+                tooltip.style.opacity = '1';
+            }
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            const tooltip = this.querySelector('span');
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+            }
+        });
+    });
+});
+
+// Función para ver detalles del vehículo
+function verDetallesVehiculo(vehiculoId) {
+    // Aquí puedes implementar un modal o redirección
+    // Por ahora, redirigir a la vista de edición que ya muestra detalles
+    window.location.href = `/vehiculos/editar/${vehiculoId}/`;
+}
+
+// Funciones para las acciones rápidas
+function exportarVehiculos() {
+    alert('Función de exportación en desarrollo');
+    // Implementar lógica de exportación aquí
+}
+
+function verMantenimiento() {
+    alert('Calendario de mantenimiento en desarrollo');
+    // Implementar vista de mantenimiento aquí
+}
+
+function verReportesVehiculos() {
+    alert('Reportes de la flota en desarrollo');
+    // Implementar vista de reportes aquí
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl+F para buscar
+    if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    }
+    
+    // Ctrl+N para nuevo vehículo
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        window.location.href = "{% url 'crear_vehiculo' %}";
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,474 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Conductores - Service Coronado{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-yellow-50/30 to-orange-50/30 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8" data-aos="fade-down">
+            <div class="mb-4 lg:mb-0">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-id-card text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl lg:text-4xl font-black text-gray-800">Gestión de Conductores</h1>
+                        <p class="text-gray-600">Administra y supervisa tu equipo de conductores profesionales</p>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'crear_conductor' %}" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 px-6 py-3 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <i class="fas fa-user-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                Nuevo Conductor
+            </a>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-aos="fade-up">
+            <!-- Total Conductores -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Total Conductores</p>
+                        <h3 class="text-3xl font-black text-gray-800 mt-2">{{ conductores.count }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-users text-yellow-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-500 text-sm">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    <span>Equipo en crecimiento</span>
+                </div>
+            </div>
+
+            <!-- Conductores Disponibles -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Disponibles</p>
+                        <h3 class="text-3xl font-black text-green-600 mt-2">{{ conductores_disponibles }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-user-check text-green-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-500 text-sm">
+                    <i class="fas fa-car-side mr-1"></i>
+                    <span>Listos para viajar</span>
+                </div>
+            </div>
+
+            <!-- Con Experiencia -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Con Experiencia</p>
+                        <h3 class="text-3xl font-black text-blue-600 mt-2">{{ conductores_experiencia }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-medal text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-blue-500 text-sm">
+                    <i class="fas fa-award mr-1"></i>
+                    <span>+2 años experiencia</span>
+                </div>
+            </div>
+
+            <!-- Experiencia Promedio -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Experiencia Promedio</p>
+                        <h3 class="text-3xl font-black text-purple-600 mt-2">{{ experiencia_promedio|default:"0" }} años</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-purple-500 text-sm">
+                    <i class="fas fa-trending-up mr-1"></i>
+                    <span>Promedio del equipo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="glass-morphism rounded-3xl shadow-2xl overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+            <!-- Table Header -->
+            <div class="bg-gradient-to-r from-yellow-500 to-orange-500 px-6 py-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-list text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-black text-white">Todos los Conductores</h2>
+                            <p class="text-yellow-100 text-sm">{{ conductores.count }} conductores en el equipo</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <input type="text" placeholder="Buscar conductor..." class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-white placeholder-yellow-200 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
+                            <i class="fas fa-search absolute right-3 top-3 text-yellow-200"></i>
+                        </div>
+                        <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl px-4 py-2 text-white transition-colors">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Body -->
+            <div class="p-6">
+                {% if conductores %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Conductor</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Licencia & Contacto</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Experiencia</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Disponibilidad</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Estado</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Registro</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for conductor in conductores %}
+                            <tr class="hover:bg-yellow-50/30 transition-colors duration-200 group">
+                                <!-- Información del Conductor -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-user text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-gray-800 group-hover:text-orange-600 transition-colors">
+                                                {{ conductor.nombre }}
+                                            </h3>
+                                            <p class="text-xs text-gray-500">ID: {{ conductor.id }}</p>
+                                            {% if conductor.edad %}
+                                            <p class="text-xs text-gray-400">{{ conductor.edad }} años</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Licencia & Contacto -->
+                                <td class="py-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <div class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs font-mono font-bold">
+                                                {{ conductor.licencia }}
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-phone text-xs mr-2 text-green-500"></i>
+                                            {{ conductor.telefono }}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Experiencia -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-3">
+                                        {% if conductor.experiencia_años and conductor.experiencia_años > 0 %}
+                                        <div class="flex flex-col items-center">
+                                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+                                                {{ conductor.experiencia_años }} años
+                                            </span>
+                                            <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                                                <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-1.5 rounded-full experience-bar" 
+                                                     data-experiencia="{{ conductor.experiencia_años }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">
+                                            Sin exp.
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <!-- Disponibilidad -->
+                                <td class="py-4">
+                                    {% if conductor.disponible %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                        <i class="fas fa-circle text-[8px] mr-1 animate-pulse"></i>
+                                        Disponible
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                        <i class="fas fa-circle text-[8px] mr-1"></i>
+                                        Ocupado
+                                    </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Estado -->
+                                <td class="py-4">
+                                    {% if conductor.activo %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                        <i class="fas fa-check-circle text-[8px] mr-1"></i>
+                                        Activo
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                        <i class="fas fa-times-circle text-[8px] mr-1"></i>
+                                        Inactivo
+                                    </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Registro -->
+                                <td class="py-4">
+                                    <div class="text-sm text-gray-600">
+                                        <div>{{ conductor.creado|date:"d/m/Y" }}</div>
+                                        <div class="text-xs text-gray-400">{{ conductor.creado|date:"H:i" }}</div>
+                                    </div>
+                                </td>
+
+                                <!-- Acciones -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <button class="w-8 h-8 bg-blue-100 hover:bg-blue-500 rounded-lg flex items-center justify-center transition-colors group/tooltip relative">
+                                            <i class="fas fa-eye text-blue-500 group-hover/tooltip:text-white text-xs"></i>
+                                            <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap">
+                                                Ver detalles
+                                            </span>
+                                        </button>
+                                        <button class="w-8 h-8 bg-yellow-100 hover:bg-yellow-500 rounded-lg flex items-center justify-center transition-colors group/tooltip relative">
+                                            <i class="fas fa-edit text-yellow-500 group-hover/tooltip:text-white text-xs"></i>
+                                            <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap">
+                                                Editar
+                                            </span>
+                                        </button>
+                                        <button class="w-8 h-8 bg-red-100 hover:bg-red-500 rounded-lg flex items-center justify-center transition-colors group/tooltip relative">
+                                            <i class="fas fa-toggle-off text-red-500 group-hover/tooltip:text-white text-xs"></i>
+                                            <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap">
+                                                Desactivar
+                                            </span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-200">
+                    <div class="text-sm text-gray-600">
+                        Mostrando <span class="font-semibold">1-{{ conductores.count }}</span> de <span class="font-semibold">{{ conductores.count }}</span> conductores
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-chevron-left text-gray-600 text-sm"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-yellow-500 text-white rounded-xl flex items-center justify-center font-semibold">
+                            1
+                        </button>
+                        <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-chevron-right text-gray-600 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-12" data-aos="zoom-in">
+                    <div class="w-24 h-24 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-id-card text-yellow-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-600 mb-3">No hay conductores registrados</h3>
+                    <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                        Comienza construyendo tu equipo de conductores profesionales. Agrega tu primer conductor para empezar a gestionar viajes.
+                    </p>
+                    <a href="{% url 'crear_conductor' %}" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 inline-flex items-center px-6 py-3 text-white font-bold rounded-2xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        <i class="fas fa-user-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                        Agregar Primer Conductor
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions Footer -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up" data-aos-delay="400">
+            <!-- Export Data -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer">
+                <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-file-export text-yellow-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Exportar Lista</h4>
+                <p class="text-gray-600 text-sm">Descarga datos en Excel/PDF</p>
+            </div>
+
+            <!-- Schedule Management -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer">
+                <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-alt text-green-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Horarios</h4>
+                <p class="text-gray-600 text-sm">Gestionar turnos y disponibilidad</p>
+            </div>
+
+            <!-- Performance Reports -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer">
+                <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chart-pie text-purple-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Rendimiento</h4>
+                <p class="text-gray-600 text-sm">Reportes de desempeño</p>
+            </div>
+        </div>
+
+        <!-- Experience Distribution -->
+        <div class="mt-8 glass-morphism rounded-3xl p-6 shadow-2xl" data-aos="fade-up" data-aos-delay="600">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-chart-bar text-white text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-gray-800">Distribución por Experiencia</h3>
+                    <p class="text-gray-600 text-sm">Niveles de experiencia del equipo</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-2xl">
+                    <div class="text-2xl font-black text-blue-600">{{ principiantes|default:"0" }}</div>
+                    <div class="text-sm text-blue-700 font-semibold">Principiantes</div>
+                    <div class="text-xs text-blue-500">0-1 años</div>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-2xl">
+                    <div class="text-2xl font-black text-green-600">{{ intermedios|default:"0" }}</div>
+                    <div class="text-sm text-green-700 font-semibold">Intermedios</div>
+                    <div class="text-xs text-green-500">2-3 años</div>
+                </div>
+                <div class="text-center p-4 bg-yellow-50 rounded-2xl">
+                    <div class="text-2xl font-black text-yellow-600">{{ avanzados|default:"0" }}</div>
+                    <div class="text-sm text-yellow-700 font-semibold">Avanzados</div>
+                    <div class="text-xs text-yellow-500">4-5 años</div>
+                </div>
+                <div class="text-center p-4 bg-red-50 rounded-2xl">
+                    <div class="text-2xl font-black text-red-600">{{ expertos|default:"0" }}</div>
+                    <div class="text-sm text-red-700 font-semibold">Expertos</div>
+                    <div class="text-xs text-red-500">5+ años</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom table styles */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th, td {
+    padding: 1rem 0.5rem;
+}
+
+th:first-child, td:first-child {
+    padding-left: 1rem;
+}
+
+th:last-child, td:last-child {
+    padding-right: 1rem;
+}
+
+/* Smooth transitions */
+.glass-morphism {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects for cards */
+.card-hover:hover {
+    transform: translateY(-4px);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.querySelector('input[type="text"]');
+    const tableRows = document.querySelectorAll('tbody tr');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Animate experience bars
+    function animateExperienceBars() {
+        const experienceBars = document.querySelectorAll('.experience-bar');
+        experienceBars.forEach(bar => {
+            const experiencia = parseInt(bar.getAttribute('data-experiencia')) || 0;
+            // Calcular el porcentaje (máximo 10 años = 100%)
+            let percentage = (experiencia / 10) * 100;
+            if (percentage > 100) percentage = 100;
+            
+            // Animar la barra
+            setTimeout(() => {
+                bar.style.transition = 'width 1s ease-in-out';
+                bar.style.width = percentage + '%';
+            }, 300);
+        });
+    }
+
+    // Add smooth animations to table rows
+    tableRows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+        row.classList.add('animate__animated', 'animate__fadeInUp');
+    });
+
+    // Tooltip functionality
+    const tooltipButtons = document.querySelectorAll('button[class*="group/tooltip"]');
+    tooltipButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            const tooltip = this.querySelector('span');
+            tooltip.style.opacity = '1';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            const tooltip = this.querySelector('span');
+            tooltip.style.opacity = '0';
+        });
+    });
+
+    // Quick actions functionality
+    const quickActions = document.querySelectorAll('.glass-morphism.cursor-pointer');
+    quickActions.forEach(action => {
+        action.addEventListener('click', function() {
+            this.classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                this.classList.remove('animate__animated', 'animate__pulse');
+            }, 1000);
+        });
+    });
+
+    // Initialize experience bars animation
+    animateExperienceBars();
+});
+</script>
+{% endblock %}

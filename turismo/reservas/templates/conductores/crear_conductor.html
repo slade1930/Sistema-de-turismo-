@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Crear Conductor - Service Coronado{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-yellow-50/30 to-orange-50/30 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8" data-aos="fade-down">
+            <div class="inline-flex items-center space-x-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-lg mb-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-id-card-alt text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-gray-800">Nuevo Conductor</h1>
+                    <p class="text-sm text-gray-600">Agrega un conductor profesional a tu equipo</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-2" data-aos="fade-right">
+                <div class="glass-morphism rounded-3xl shadow-2xl overflow-hidden">
+                    <!-- Form Header -->
+                    <div class="bg-gradient-to-r from-yellow-500 to-orange-500 px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-steering-wheel text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-black text-white">Información del Conductor</h2>
+                                <p class="text-yellow-100 text-sm">Completa los datos profesionales</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Body -->
+                    <div class="p-6">
+                        <form method="post" novalidate class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <!-- Error Messages -->
+                            {% if form.errors %}
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl animate__animated animate__shakeX">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-red-800 font-semibold">Corrige los siguientes errores:</h3>
+                                        <ul class="text-red-600 text-sm mt-1 space-y-1">
+                                            {% for field in form %}
+                                                {% for error in field.errors %}
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-chevron-right text-xs mr-2"></i>
+                                                        {{ field.label }}: {{ error }}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endfor %}
+                                            {% for error in form.non_field_errors %}
+                                                <li class="flex items-center">
+                                                    <i class="fas fa-chevron-right text-xs mr-2"></i>
+                                                    {{ error }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Nombre Field -->
+                            <div class="space-y-2">
+                                <label for="{{ form.nombre.id_for_label }}" class="flex items-center text-sm font-bold text-gray-700">
+                                    <span class="bg-yellow-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">1</span>
+                                    Nombre Completo
+                                    <span class="text-red-500 ml-1">*</span>
+                                </label>
+                                <div class="relative">
+                                    {{ form.nombre }}
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact & License Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Teléfono Field -->
+                                <div class="space-y-2">
+                                    <label for="{{ form.telefono.id_for_label }}" class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">2</span>
+                                        Teléfono
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.telefono }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-phone text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Formato: +1234567890
+                                    </p>
+                                </div>
+
+                                <!-- Licencia Field -->
+                                <div class="space-y-2">
+                                    <label for="{{ form.licencia.id_for_label }}" class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">3</span>
+                                        Número de Licencia
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.licencia }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-id-card text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-shield-alt mr-1"></i>
+                                        Debe ser único en el sistema
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Personal Info Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Fecha Nacimiento Field -->
+                                <div class="space-y-2">
+                                    <label for="{{ form.fecha_nacimiento.id_for_label }}" class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">4</span>
+                                        Fecha de Nacimiento
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.fecha_nacimiento }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-calendar-alt text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-birthday-cake mr-1"></i>
+                                        Fecha de nacimiento del conductor
+                                    </p>
+                                </div>
+
+                                <!-- Experiencia Field -->
+                                <div class="space-y-2">
+                                    <label for="{{ form.experiencia_años.id_for_label }}" class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">5</span>
+                                        Años de Experiencia
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.experiencia_años }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-chart-line text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-road mr-1"></i>
+                                        Años de experiencia conduciendo
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Experience Level Indicator -->
+                            <div class="bg-gradient-to-r from-gray-50 to-yellow-50 rounded-2xl p-4 border border-yellow-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-gray-700">Nivel de Experiencia</span>
+                                    <span class="text-xs text-yellow-600 font-bold" id="experience-level">Principiante</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="experience-bar" class="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>0 años</span>
+                                    <span>5+ años (Experto)</span>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                                <button type="submit" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 flex-1 py-4 text-white font-bold rounded-2xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 group">
+                                    <i class="fas fa-save mr-3 group-hover:rotate-12 transition-transform"></i>
+                                    Guardar Conductor
+                                </button>
+                                <a href="{% url 'lista_conductores' %}" class="glass-morphism px-8 py-4 text-gray-700 font-bold rounded-2xl text-lg border-2 border-white/30 hover:border-gray-300 transition-all duration-300 group text-center">
+                                    <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Information -->
+            <div class="lg:col-span-1" data-aos="fade-left" data-aos-delay="200">
+                <!-- Quick Tips -->
+                <div class="glass-morphism rounded-3xl p-6 shadow-2xl mb-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-800">Consejos Rápidos</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-yellow-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Verifica que la licencia sea única en el sistema</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-orange-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Los conductores se crean como disponibles por defecto</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-red-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">La experiencia ayuda a asignar viajes importantes</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Mantén actualizada la información de contacto</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Preview -->
+                <div class="glass-morphism rounded-3xl p-6 shadow-2xl mb-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-800">Estadísticas</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-yellow-50 rounded-xl">
+                            <span class="text-sm font-semibold text-yellow-700">Conductores Totales</span>
+                            <span class="text-lg font-black text-yellow-600">{{ total_conductores|default:"0" }}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-xl">
+                            <span class="text-sm font-semibold text-green-700">Disponibles</span>
+                            <span class="text-lg font-black text-green-600">{{ conductores_disponibles|default:"0" }}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
+                            <span class="text-sm font-semibold text-blue-700">Experiencia Promedio</span>
+                            <span class="text-lg font-black text-blue-600">{{ experiencia_promedio|default:"0" }} años</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver Levels Info -->
+                <div class="glass-morphism rounded-3xl p-6 shadow-2xl">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-medal text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-800">Niveles de Experiencia</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-gray-50">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">0-1 años</span>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-500">Principiante</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-blue-50">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-blue-400 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">2-3 años</span>
+                            </div>
+                            <span class="text-xs font-semibold text-blue-500">Intermedio</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-green-50">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-green-400 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">4-5 años</span>
+                            </div>
+                            <span class="text-xs font-semibold text-green-500">Avanzado</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-yellow-50">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">5+ años</span>
+                            </div>
+                            <span class="text-xs font-semibold text-yellow-600">Experto</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom form styles */
+.form-control {
+    width: 100%;
+    padding: 1rem 2.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    color: #374151;
+}
+
+.form-control:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+}
+
+/* Number badges */
+[class*="bg-"] .fas.fa-check {
+    font-size: 0.6rem;
+}
+
+/* Hover effects */
+.glass-morphism:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Custom styles for form icons */
+.relative .form-control {
+    padding-left: 3rem;
+}
+
+/* Success and error states */
+.form-control.border-green-300 {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.form-control.border-red-300 {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+/* Focus ring for parent */
+.relative.ring-4.ring-yellow-100 {
+    border-radius: 1rem;
+    padding: 2px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Experience level indicator
+    const experienciaInput = document.getElementById('{{ form.experiencia_años.id_for_label }}');
+    const experienceBar = document.getElementById('experience-bar');
+    const experienceLevel = document.getElementById('experience-level');
+
+    function updateExperienceLevel() {
+        const years = parseInt(experienciaInput.value) || 0;
+        let percentage = 0;
+        let level = 'Principiante';
+        let color = 'from-yellow-400 to-orange-500';
+
+        if (years <= 1) {
+            percentage = (years / 1) * 25;
+            level = 'Principiante';
+            color = 'from-yellow-400 to-orange-500';
+        } else if (years <= 3) {
+            percentage = 25 + ((years - 1) / 2) * 25;
+            level = 'Intermedio';
+            color = 'from-blue-400 to-blue-500';
+        } else if (years <= 5) {
+            percentage = 50 + ((years - 3) / 2) * 25;
+            level = 'Avanzado';
+            color = 'from-green-400 to-green-500';
+        } else {
+            percentage = 100;
+            level = 'Experto';
+            color = 'from-yellow-400 to-red-500';
+        }
+
+        experienceBar.style.width = `${percentage}%`;
+        experienceBar.className = `bg-gradient-to-r ${color} h-2 rounded-full transition-all duration-500`;
+        experienceLevel.textContent = level;
+    }
+
+    if (experienciaInput) {
+        experienciaInput.addEventListener('input', updateExperienceLevel);
+        updateExperienceLevel(); // Initialize
+    }
+
+    // Add real-time validation
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input');
+    
+    inputs.forEach(input => {
+        // Add focus effects
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('ring-4', 'ring-yellow-100');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('ring-4', 'ring-yellow-100');
+        });
+        
+        // Real-time validation feedback
+        input.addEventListener('input', function() {
+            if (this.checkValidity()) {
+                this.classList.remove('border-red-300');
+                this.classList.add('border-green-300');
+            } else {
+                this.classList.remove('border-green-300');
+                this.classList.add('border-red-300');
+            }
+        });
+    });
+
+    // Form submission animation
+    form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Show loading state
+        submitBtn.innerHTML = `
+            <div class="flex items-center justify-center">
+                <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                Registrando conductor...
+            </div>
+        `;
+        submitBtn.disabled = true;
+        
+        // Revert after 3 seconds if still processing (fallback)
+        setTimeout(() => {
+            if (submitBtn.disabled) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }, 3000);
+    });
+
+    // License format validation
+    const licenciaInput = document.getElementById('{{ form.licencia.id_for_label }}');
+    if (licenciaInput) {
+        licenciaInput.addEventListener('blur', function() {
+            if (this.value && !/^[A-Z0-9]{5,20}$/.test(this.value)) {
+                this.classList.add('border-red-300');
+                // Show warning
+                if (!this.nextElementSibling || !this.nextElementSibling.classList.contains('text-red-500')) {
+                    const warning = document.createElement('p');
+                    warning.className = 'text-xs text-red-500 flex items-center mt-1';
+                    warning.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Formato de licencia inválido';
+                    this.parentNode.appendChild(warning);
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

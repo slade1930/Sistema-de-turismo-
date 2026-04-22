@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Service Coronado Transporte & Turismo</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animate.css para animaciones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'move-clouds': 'moveClouds 60s linear infinite',
+                        'move-vehicles': 'moveVehicles 40s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        moveClouds: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100vw)' },
+                        },
+                        moveVehicles: {
+                            '0%': { transform: 'translateX(100vw)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+            color: white;
+        }
+
+        /* Overlay para mejor legibilidad */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(26, 26, 46, 0.95) 0%,
+                rgba(30, 64, 175, 0.85) 50%,
+                rgba(76, 81, 191, 0.95) 100%);
+            z-index: -1;
+        }
+
+        /* Elementos decorativos animados */
+        .travel-element {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .travel-cloud {
+            background: white;
+            border-radius: 50%;
+            animation: moveClouds 60s linear infinite;
+        }
+
+        .travel-vehicle {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: moveVehicles 40s linear infinite;
+        }
+
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .glass-morphism-dark {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-light {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hover-3d {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .hover-3d:hover {
+            transform: translateY(-10px) rotateX(10deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .nav-blur {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-magic {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: white;
+            border: none;
+        }
+
+        .btn-magic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-magic:hover::before {
+            left: 100%;
+        }
+
+        .btn-magic:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        /* Layout styles */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* Hero section specific adjustments */
+        .hero-section {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Stats counter animation */
+        @keyframes countUp {
+            from { 
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .counter-animate {
+            animation: countUp 1s ease-out;
+        }
+
+        /* Efecto de niebla */
+        .fog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Efectos de texto brillante */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5),
+                         0 0 20px rgba(102, 126, 234, 0.3),
+                         0 0 30px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: auto;
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+            
+            .hero-section h1 {
+                font-size: 3rem !important;
+            }
+            
+            .hero-section p {
+                font-size: 1.125rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Overlay de niebla -->
+    <div class="fog-overlay"></div>
+
+    <!-- Elementos decorativos de viaje -->
+    <div class="travel-element travel-cloud" style="top: 10%; width: 200px; height: 80px; animation-delay: 0s;"></div>
+    <div class="travel-element travel-cloud" style="top: 30%; width: 150px; height: 60px; animation-delay: 10s;"></div>
+    <div class="travel-element travel-cloud" style="top: 60%; width: 180px; height: 70px; animation-delay: 20s;"></div>
+    
+    <div class="travel-element travel-vehicle" style="top: 20%; animation-delay: 5s;">
+        <i class="fas fa-car"></i>
+    </div>
+    <div class="travel-element travel-vehicle" style="top: 50%; animation-delay: 15s;">
+        <i class="fas fa-bus"></i>
+    </div>
+    <div class="travel-element travel-vehicle" style="top: 80%; animation-delay: 25s;">
+        <i class="fas fa-plane"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-blur fixed top-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-4 group cursor-pointer">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-route text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black gradient-text-light">Service Coronado</h1>
+                        <p class="text-xs text-blue-200 font-medium">TRANSPORTE & TURISMO</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="{% url 'home' %}" class="nav-item px-6 py-3 text-sm font-semibold rounded-2xl transition-all duration-300 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="nav-item px-6 py-3 text-sm font-semibold rounded-2xl transition-all duration-300 text-gray-300 hover:bg-white/10 hover:text-white hover:shadow-lg">
+                        <i class="fas fa-chart-network mr-2"></i>Dashboard
+                    </a>
+                    
+                    <!-- Mega Menu -->
+                    <div class="relative group">
+                        <button class="nav-item px-6 py-3 text-sm font-semibold rounded-2xl text-gray-300 hover:bg-white/10 hover:text-white hover:shadow-lg transition-all duration-300 flex items-center">
+                            <i class="fas fa-th-large mr-2"></i>Gestión
+                            <i class="fas fa-chevron-down ml-2 text-xs transition-transform group-hover:rotate-180"></i>
+                        </button>
+                        <div class="absolute left-0 mt-4 w-96 bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:scale-100 scale-95 origin-top-right z-50">
+                            <div class="p-6 grid grid-cols-2 gap-4">
+                                <a href="{% url 'lista_reservas' %}" class="flex items-center p-4 rounded-xl hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-300 group">
+                                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-500 transition-colors">
+                                        <i class="fas fa-calendar-check text-blue-400 group-hover:text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-white">Reservas</h3>
+                                        <p class="text-xs text-gray-400">Gestionar viajes</p>
+                                    </div>
+                                </a>
+                                <a href="{% url 'lista_clientes' %}" class="flex items-center p-4 rounded-xl hover:bg-green-500/20 hover:text-green-400 transition-all duration-300 group">
+                                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mr-4 group-hover:bg-green-500 transition-colors">
+                                        <i class="fas fa-users text-green-400 group-hover:text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-white">Clientes</h3>
+                                        <p class="text-xs text-gray-400">Administrar usuarios</p>
+                                    </div>
+                                </a>
+                                <a href="{% url 'lista_conductores' %}" class="flex items-center p-4 rounded-xl hover:bg-yellow-500/20 hover:text-yellow-400 transition-all duration-300 group">
+                                    <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mr-4 group-hover:bg-yellow-500 transition-colors">
+                                        <i class="fas fa-id-card text-yellow-400 group-hover:text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-white">Conductores</h3>
+                                        <p class="text-xs text-gray-400">Equipo de trabajo</p>
+                                    </div>
+                                </a>
+                                <a href="{% url 'lista_vehiculos' %}" class="flex items-center p-4 rounded-xl hover:bg-purple-500/20 hover:text-purple-400 transition-all duration-300 group">
+                                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mr-4 group-hover:bg-purple-500 transition-colors">
+                                        <i class="fas fa-car text-purple-400 group-hover:text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-white">Vehículos</h3>
+                                        <p class="text-xs text-gray-400">Flota automotriz</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="flex items-center space-x-3 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-md">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-sm font-semibold text-white">Administrador</p>
+                                <p class="text-xs text-blue-200">Sistema Service Coronado</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-blue-200 text-xs transition-transform group-hover:rotate-180"></i>
+                        </button>
+                        <div class="absolute right-0 mt-3 w-64 bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:scale-100 scale-95 origin-top-right z-50">
+                            <div class="p-4">
+                                <div class="flex items-center space-x-3 p-3 rounded-xl bg-blue-500/20 mb-3">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-user-cog text-white"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-white">Administrador</p>
+                                        <p class="text-xs text-blue-300">Sistema Service Coronado</p>
+                                    </div>
+                                </div>
+                                <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10 transition-colors group">
+                                    <i class="fas fa-cog text-gray-400 group-hover:text-blue-400"></i>
+                                    <span class="text-gray-300 group-hover:text-white">Configuración</span>
+                                </a>
+                                <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10 transition-colors group">
+                                    <i class="fas fa-bell text-gray-400 group-hover:text-yellow-400"></i>
+                                    <span class="text-gray-300 group-hover:text-white">Notificaciones</span>
+                                </a>
+                                <div class="border-t border-gray-700 mt-3 pt-3">
+                                    <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10 transition-colors group">
+                                        <i class="fas fa-sign-out-alt text-gray-400 group-hover:text-gray-300"></i>
+                                        <span class="text-gray-300 group-hover:text-white">Salir</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button class="lg:hidden w-12 h-12 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-white"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden bg-gray-900/95 backdrop-blur-xl border-t border-gray-700 absolute top-full w-full shadow-2xl transform -translate-y-2 opacity-0 invisible transition-all duration-300">
+            <div class="p-4 space-y-2">
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 p-4 rounded-2xl bg-white/10 transition-colors">
+                    <i class="fas fa-home text-blue-400 w-6"></i>
+                    <span class="font-semibold text-white">Inicio</span>
+                </a>
+                <a href="{% url 'dashboard' %}" class="flex items-center space-x-3 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+                    <i class="fas fa-chart-network text-blue-400 w-6"></i>
+                    <span class="font-semibold text-white">Dashboard</span>
+                </a>
+                <div class="border-t border-gray-700 pt-2">
+                    <p class="text-xs font-semibold text-gray-400 px-4 py-2">Gestión</p>
+                    <a href="{% url 'lista_reservas' %}" class="flex items-center space-x-3 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-calendar-check text-blue-400 w-6"></i>
+                        <span class="font-semibold text-white">Reservas</span>
+                    </a>
+                    <a href="{% url 'lista_clientes' %}" class="flex items-center space-x-3 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-users text-green-400 w-6"></i>
+                        <span class="font-semibold text-white">Clientes</span>
+                    </a>
+                    <a href="{% url 'lista_conductores' %}" class="flex items-center space-x-3 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-id-card text-yellow-400 w-6"></i>
+                        <span class="font-semibold text-white">Conductores</span>
+                    </a>
+                    <a href="{% url 'lista_vehiculos' %}" class="flex items-center space-x-3 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-car text-purple-400 w-6"></i>
+                        <span class="font-semibold text-white">Vehículos</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 pt-20 relative z-10 main-content">
+        <div class="w-full h-full">
+            <!-- Animated Messages -->
+            {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="mb-4 space-y-4" id="messages-container">
+                    {% for message in messages %}
+                    <div class="message-item animate__animated animate__fadeInDown glass-morphism-dark rounded-2xl border-l-4 {% if message.tags == 'success' %}border-green-500{% elif message.tags == 'error' %}border-red-500{% elif message.tags == 'warning' %}border-yellow-500{% else %}border-blue-500{% endif %} shadow-lg p-4 transform hover:scale-[1.02] transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center {% if message.tags == 'success' %}bg-green-500/20 text-green-400{% elif message.tags == 'error' %}bg-red-500/20 text-red-400{% elif message.tags == 'warning' %}bg-yellow-500/20 text-yellow-400{% else %}bg-blue-500/20 text-blue-400{% endif %}">
+                                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-white">{{ message }}</p>
+                                    <p class="text-xs text-gray-400">Hace unos momentos</p>
+                                </div>
+                            </div>
+                            <button class="close-message w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors">
+                                <i class="fas fa-times text-gray-400 hover:text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Content -->
+            <!-- Hero Section -->
+            <section class="hero-section relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Hero Content -->
+                        <div class="text-center lg:text-left" data-aos="fade-right">
+                            <div class="inline-flex items-center space-x-3 glass-morphism-dark px-4 py-2 rounded-2xl shadow-lg mb-6">
+                                <div class="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-map-marked-alt text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-white">Plataforma de Transporte Turístico</span>
+                            </div>
+                            
+                            <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight">
+                                <span class="gradient-text-light glow-text">Conectamos</span>
+                                <br>
+                                <span class="text-white">Destinos, Creamos</span>
+                                <br>
+                                <span class="text-blue-400">Experiencias</span>
+                            </h1>
+                            
+                            <p class="text-xl lg:text-2xl text-gray-300 mb-8 leading-relaxed">
+                                Sistema integral de gestión de transporte turístico que transforma tu operación. 
+                                <span class="font-semibold text-blue-400">Eficiencia, control y crecimiento</span> en una sola plataforma.
+                            </p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                <a href="{% url 'crear_reserva' %}" class="btn-magic px-8 py-4 text-white font-bold rounded-2xl text-lg shadow-2xl group">
+                                    <i class="fas fa-plane-departure mr-3 group-hover:rotate-45 transition-transform"></i>
+                                    Crear Nueva Reserva
+                                </a>
+                                <a href="{% url 'dashboard' %}" class="glass-morphism px-8 py-4 text-white font-bold rounded-2xl text-lg border-2 border-white/30 hover:border-blue-300 hover:bg-white/10 transition-all duration-300 group">
+                                    <i class="fas fa-chart-network mr-3 group-hover:scale-110 transition-transform"></i>
+                                    Ver Dashboard
+                                </a>
+                            </div>
+                            
+                            <!-- Stats Mini -->
+                            <div class="flex flex-wrap gap-6 mt-12 justify-center lg:justify-start">
+                                <div class="text-center">
+                                    <div class="text-2xl font-black text-blue-400 counter" data-count="{{ total_reservas|default:'0' }}">0</div>
+                                    <div class="text-sm text-blue-200">Viajes Activos</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-black text-green-400 counter" data-count="{{ total_clientes|default:'0' }}">0</div>
+                                    <div class="text-sm text-green-200">Viajeros Felices</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-black text-purple-400 counter" data-count="{{ total_vehiculos|default:'0' }}">0</div>
+                                    <div class="text-sm text-purple-200">Vehículos Turísticos</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hero Visual -->
+                        <div class="relative" data-aos="fade-left" data-aos-delay="200">
+                            <div class="relative">
+                                <!-- Main Card -->
+                                <div class="glass-morphism-dark rounded-3xl p-8 shadow-2xl hover-3d">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <!-- Animated Elements -->
+                                        <div class="bg-blue-500/10 rounded-2xl p-4 text-center transform hover:scale-105 transition-all duration-300 border border-blue-500/20">
+                                            <i class="fas fa-car-side text-4xl text-blue-400 mb-3 floating"></i>
+                                            <p class="text-sm font-semibold text-white">Vehículos</p>
+                                        </div>
+                                        <div class="bg-green-500/10 rounded-2xl p-4 text-center transform hover:scale-105 transition-all duration-300 border border-green-500/20">
+                                            <i class="fas fa-users text-4xl text-green-400 mb-3 floating" style="animation-delay: 1s;"></i>
+                                            <p class="text-sm font-semibold text-white">Viajeros</p>
+                                        </div>
+                                        <div class="bg-purple-500/10 rounded-2xl p-4 text-center transform hover:scale-105 transition-all duration-300 border border-purple-500/20">
+                                            <i class="fas fa-id-card-alt text-4xl text-purple-400 mb-3 floating" style="animation-delay: 2s;"></i>
+                                            <p class="text-sm font-semibold text-white">Guias</p>
+                                        </div>
+                                        <div class="bg-yellow-500/10 rounded-2xl p-4 text-center transform hover:scale-105 transition-all duration-300 border border-yellow-500/20">
+                                            <i class="fas fa-chart-line text-4xl text-yellow-400 mb-3 floating" style="animation-delay: 3s;"></i>
+                                            <p class="text-sm font-semibold text-white">Rutas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Floating Elements -->
+                                <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl floating">
+                                    <i class="fas fa-map-marked text-white text-2xl"></i>
+                                </div>
+                                <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl floating" style="animation-delay: 2s;">
+                                    <i class="fas fa-compass text-white text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="py-20 relative w-full">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-blue-900/30"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                    <div class="text-center mb-16" data-aos="fade-up">
+                        <div class="inline-flex items-center space-x-2 glass-morphism-dark px-6 py-3 rounded-2xl shadow-lg mb-6">
+                            <i class="fas fa-sparkles text-yellow-400"></i>
+                            <span class="text-lg font-bold text-white">¿Por qué Service Coronado?</span>
+                        </div>
+                        <h2 class="text-4xl lg:text-5xl font-black mb-6">
+                            <span class="gradient-text-light">Características</span> que Marcan la Diferencia
+                        </h2>
+                        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                            Diseñado para optimizar cada aspecto de tu operación turística con tecnología de vanguardia.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="200">
+                        <!-- Feature 1 -->
+                        <div class="glass-morphism-dark rounded-3xl p-8 card-hover group border border-white/10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-bolt text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4 text-white">Velocidad en Viajes</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Procesa reservas turísticas en tiempo real con nuestra arquitectura optimizada. 
+                                Flujos que aceleran tu operación 10x.
+                            </p>
+                            <div class="mt-6 flex items-center text-blue-400 font-semibold">
+                                <span>Descubrir más</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Feature 2 -->
+                        <div class="glass-morphism-dark rounded-3xl p-8 card-hover group border border-white/10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-chart-network text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4 text-white">Gestión Inteligente</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Dashboard interactivo que predice tendencias turísticas 
+                                y optimiza tus recursos automáticamente.
+                            </p>
+                            <div class="mt-6 flex items-center text-green-400 font-semibold">
+                                <span>Analizar datos</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Feature 3 -->
+                        <div class="glass-morphism-dark rounded-3xl p-8 card-hover group border border-white/10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4 text-white">Experiencia Total</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Experiencia perfecta en cualquier dispositivo. App móvil nativa, 
+                                tablet y desktop sincronizados en tiempo real.
+                            </p>
+                            <div class="mt-6 flex items-center text-purple-400 font-semibold">
+                                <span>Probar demo</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions Section -->
+            <section class="py-20 bg-gradient-to-br from-gray-900/50 to-blue-900/30 w-full">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                    <div class="text-center mb-16" data-aos="fade-up">
+                        <h2 class="text-4xl lg:text-5xl font-black mb-6 text-white">
+                            Acciones <span class="gradient-text-light">Inmediatas</span>
+                        </h2>
+                        <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                            Accede rápidamente a las funciones principales del sistema turístico
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" data-aos="fade-up" data-aos-delay="200">
+                        <!-- Reservas -->
+                        <a href="{% url 'lista_reservas' %}" class="group">
+                            <div class="glass-morphism-dark rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-blue-400 card-hover">
+                                <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
+                                    <i class="fas fa-calendar-check text-2xl text-blue-400 group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-white mb-2">Gestión de Viajes</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    Administra y programa todos los viajes turísticos
+                                </p>
+                                <div class="mt-4 flex items-center text-blue-400 text-sm font-semibold">
+                                    <span>Explorar</span>
+                                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Clientes -->
+                        <a href="{% url 'crear_cliente' %}" class="group">
+                            <div class="glass-morphism-dark rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-green-400 card-hover">
+                                <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-green-500 transition-colors">
+                                    <i class="fas fa-user-plus text-2xl text-green-400 group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-white mb-2">Nuevo Viajero</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    Registra viajeros en segundos con formulario inteligente
+                                </p>
+                                <div class="mt-4 flex items-center text-green-400 text-sm font-semibold">
+                                    <span>Agregar</span>
+                                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Conductores -->
+                        <a href="{% url 'lista_conductores' %}" class="group">
+                            <div class="glass-morphism-dark rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-yellow-400 card-hover">
+                                <div class="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-yellow-500 transition-colors">
+                                    <i class="fas fa-id-card text-2xl text-yellow-400 group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-white mb-2">Equipo de Guías</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    Gestiona tu equipo de guías turísticos profesionales
+                                </p>
+                                <div class="mt-4 flex items-center text-yellow-400 text-sm font-semibold">
+                                    <span>Administrar</span>
+                                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Vehículos -->
+                        <a href="{% url 'lista_vehiculos' %}" class="group">
+                            <div class="glass-morphism-dark rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-purple-400 card-hover">
+                                <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-purple-500 transition-colors">
+                                    <i class="fas fa-car text-2xl text-purple-400 group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-white mb-2">Flota Turística</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    Controla tu flota de vehículos turísticos
+                                </p>
+                                <div class="mt-4 flex items-center text-purple-400 text-sm font-semibold">
+                                    <span>Supervisar</span>
+                                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="py-20 w-full">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Reservas Stats -->
+                        <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
+                            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-400/30">
+                                <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-calendar text-3xl text-white"></i>
+                                </div>
+                                <div class="text-4xl lg:text-5xl font-black text-white mb-2 counter-animate counter-stats" data-count="{{ total_reservas|default:'0' }}">0</div>
+                                <p class="text-blue-100 font-semibold">Viajes Programados</p>
+                                <div class="mt-4 flex items-center justify-center text-blue-200 text-sm">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>+12% este mes</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Clientes Stats -->
+                        <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
+                            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-green-400/30">
+                                <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-users text-3xl text-white"></i>
+                                </div>
+                                <div class="text-4xl lg:text-5xl font-black text-white mb-2 counter-animate counter-stats" data-count="{{ total_clientes|default:'0' }}">0</div>
+                                <p class="text-green-100 font-semibold">Viajeros Activos</p>
+                                <div class="mt-4 flex items-center justify-center text-green-200 text-sm">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>+8% este mes</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Conductores Stats -->
+                        <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
+                            <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-yellow-400/30">
+                                <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-id-card text-3xl text-white"></i>
+                                </div>
+                                <div class="text-4xl lg:text-5xl font-black text-white mb-2 counter-animate counter-stats" data-count="{{ total_conductores|default:'0' }}">0</div>
+                                <p class="text-yellow-100 font-semibold">Guías Turísticos</p>
+                                <div class="mt-4 flex items-center justify-center text-yellow-200 text-sm">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>+5% este mes</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Vehículos Stats -->
+                        <div class="text-center" data-aos="zoom-in" data-aos-delay="400">
+                            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 border border-purple-400/30">
+                                <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-car text-3xl text-white"></i>
+                                </div>
+                                <div class="text-4xl lg:text-5xl font-black text-white mb-2 counter-animate counter-stats" data-count="{{ total_vehiculos|default:'0' }}">0</div>
+                                <p class="text-purple-100 font-semibold">Vehículos Turísticos</p>
+                                <div class="mt-4 flex items-center justify-center text-purple-200 text-sm">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    <span>+15% este mes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="py-20 bg-gradient-to-br from-blue-600 to-purple-700 relative overflow-hidden w-full">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10" data-aos="fade-up">
+                    <div class="inline-flex items-center space-x-2 mb-6">
+                        <i class="fas fa-map-signs text-2xl text-yellow-300"></i>
+                        <span class="text-lg font-semibold text-blue-100">Tu próximo destino nos espera</span>
+                    </div>
+                    <h2 class="text-4xl lg:text-5xl font-black text-white mb-6">
+                        ¿Listo para Explorar Nuevos Horizontes?
+                    </h2>
+                    <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+                        Únete a cientos de empresas turísticas que ya optimizaron sus operaciones con Krazz. 
+                        Comienza hoy mismo y lleva tu negocio a lugares nunca antes imaginados.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="{% url 'crear_reserva' %}" class="bg-white text-blue-600 px-8 py-4 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 group">
+                            <i class="fas fa-route mr-3 group-hover:rotate-45 transition-transform"></i>
+                            Comenzar Viaje
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 group">
+                            <i class="fas fa-chart-bar mr-3"></i>
+                            Ver Ruta de Éxito
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/90 backdrop-blur-sm border-t border-white/10 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-route text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black gradient-text-light">Service Coronado</h2>
+                            <p class="text-sm text-blue-300 font-medium">La revolución del transporte turístico</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed max-w-md">
+                        Conectamos destinos, creamos experiencias. Sistema integral de gestión de transporte 
+                        turístico con tecnología de vanguardia y diseño centrado en el viajero.
+                    </p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center hover:bg-purple-500 hover:text-white transition-all duration-300">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700/50 rounded-xl flex items-center justify-center hover:bg-gray-800 hover:text-white transition-all duration-300">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-pink-500/20 rounded-xl flex items-center justify-center hover:bg-pink-500 hover:text-white transition-all duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Navegación</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'home' %}" class="text-gray-300 hover:text-blue-400 transition-colors flex items-center group">
+                            <i class="fas fa-map-marker-alt text-xs mr-2 group-hover:text-blue-400"></i>
+                            Inicio
+                        </a></li>
+                        <li><a href="{% url 'dashboard' %}" class="text-gray-300 hover:text-blue-400 transition-colors flex items-center group">
+                            <i class="fas fa-chart-line text-xs mr-2 group-hover:text-blue-400"></i>
+                            Dashboard
+                        </a></li>
+                        <li><a href="{% url 'lista_reservas' %}" class="text-gray-300 hover:text-blue-400 transition-colors flex items-center group">
+                            <i class="fas fa-calendar-alt text-xs mr-2 group-hover:text-blue-400"></i>
+                            Viajes
+                        </a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-blue-400 transition-colors flex items-center group">
+                            <i class="fas fa-map text-xs mr-2 group-hover:text-blue-400"></i>
+                            Rutas
+                        </a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4">Contacto</h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-phone text-blue-400 text-sm"></i>
+                            </div>
+                            <span>+507 6123-4567</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-envelope text-green-400 text-sm"></i>
+                            </div>
+                            <span>turismo@ServiceCoronado.com</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-purple-400 text-sm"></i>
+                            </div>
+                            <span>Centro Turístico, Panama</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-400 text-sm"></i>
+                            </div>
+                            <span>24/7 Soporte Turístico</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="border-t border-gray-700 mt-12 pt-8 flex flex-col lg:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">
+                    &copy; 2024 <span class="font-bold gradient-text-light">Service Coronado Turismo</span>. Todos los derechos reservados.
+                </p>
+                <div class="flex space-x-6 mt-4 lg:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors text-sm">Privacidad</a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors text-sm">Términos</a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors text-sm">Soporte</a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors text-sm">Turismo</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <a href="{% url 'crear_reserva' %}" class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl flex items-center justify-center shadow-2xl floating-btn hover:shadow-3xl transition-all duration-300 z-40 group floating" title="Nueva Reserva">
+        <i class="fas fa-plus text-xl group-hover:rotate-90 transition-transform duration-300"></i>
+        <span class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
+            <i class="fas fa-bolt"></i>
+        </span>
+    </a>
+
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Crear nubes y vehículos decorativos
+        function createTravelElements() {
+            const travelContainer = document.createElement('div');
+            travelContainer.className = 'travel-elements-container';
+            document.body.appendChild(travelContainer);
+
+            // Crear nubes
+            for (let i = 0; i < 5; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'travel-element travel-cloud';
+                cloud.style.top = `${Math.random() * 80 + 10}%`;
+                cloud.style.width = `${Math.random() * 100 + 100}px`;
+                cloud.style.height = `${Math.random() * 40 + 40}px`;
+                cloud.style.animationDelay = `${Math.random() * 30}s`;
+                cloud.style.opacity = `${Math.random() * 0.1 + 0.05}`;
+                travelContainer.appendChild(cloud);
+            }
+
+            // Crear iconos de vehículos
+            const vehicles = ['fa-car', 'fa-bus', 'fa-plane', 'fa-train', 'fa-ship'];
+            for (let i = 0; i < 3; i++) {
+                const vehicle = document.createElement('div');
+                vehicle.className = 'travel-element travel-vehicle';
+                vehicle.style.top = `${Math.random() * 70 + 15}%`;
+                vehicle.style.fontSize = `${Math.random() * 1.5 + 2}rem`;
+                vehicle.style.animationDelay = `${Math.random() * 20}s`;
+                vehicle.innerHTML = `<i class="fas ${vehicles[Math.floor(Math.random() * vehicles.length)]}"></i>`;
+                travelContainer.appendChild(vehicle);
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('opacity-0')) {
+                menu.classList.remove('opacity-0', 'invisible', '-translate-y-2');
+                menu.classList.add('opacity-100', 'visible', 'translate-y-0');
+            } else {
+                menu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                menu.classList.add('opacity-0', 'invisible', '-translate-y-2');
+            }
+        }
+
+        // Counter animation function
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                    element.classList.add('counter-animate');
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 40);
+        }
+
+        // Animate stats when they come into view
+        function initCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                if (!isNaN(target)) {
+                    animateCounter(counter, target);
+                }
+            });
+            
+            const statCounters = document.querySelectorAll('.counter-stats');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-count'));
+                        if (!isNaN(target)) {
+                            animateCounter(entry.target, target);
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            statCounters.forEach(counter => {
+                observer.observe(counter);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            createTravelElements();
+            
+            // Initialize counters
+            initCounters();
+            
+            const messages = document.querySelectorAll('.message-item');
+            messages.forEach((message, index) => {
+                // Auto remove after 6 seconds
+                setTimeout(() => {
+                    message.style.transform = 'translateX(100%)';
+                    message.style.opacity = '0';
+                    setTimeout(() => message.remove(), 300);
+                }, 6000 + (index * 200));
+
+                // Close on button click
+                message.querySelector('.close-message')?.addEventListener('click', function() {
+                    this.closest('.message-item').style.transform = 'translateX(100%)';
+                    this.closest('.message-item').style.opacity = '0';
+                    setTimeout(() => this.closest('.message-item').remove(), 300);
+                });
+            });
+
+            // Navbar scroll effect
+            let lastScroll = 0;
+            const navbar = document.querySelector('nav');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll <= 0) {
+                    navbar.style.background = 'rgba(15, 23, 42, 0.9)';
+                    navbar.style.backdropFilter = 'blur(20px)';
+                }
+                
+                if (currentScroll > lastScroll && currentScroll > 100) {
+                    navbar.style.transform = 'translateY(-100%)';
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                        mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-2');
+                    }
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+                
+                lastScroll = currentScroll;
+            });
+
+            // Add hover effects to cards
+            document.querySelectorAll('.card-hover').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                    this.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.4)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const menuButton = document.querySelector('button.lg\\:hidden');
+                
+                if (mobileMenu && menuButton && 
+                    !mobileMenu.contains(event.target) && 
+                    !menuButton.contains(event.target) &&
+                    !mobileMenu.classList.contains('opacity-0')) {
+                    mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                    mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-2');
+                }
+            });
+
+            // Add floating animation to hero icons
+            const floatingIcons = document.querySelectorAll('.floating');
+            floatingIcons.forEach((icon, index) => {
+                icon.style.animationDelay = `${index * 0.5}s`;
+            });
+
+            // Función para cambiar imagen de fondo dinámicamente
+            function changeBackgroundImage() {
+                const images = [
+                    'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+                    'https://images.unsplash.com/photo-1500835556837-99ac94a94552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+                    'https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+                    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+                ];
+                
+                const currentImage = Math.floor(Math.random() * images.length);
+                document.body.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('${images[currentImage]}')`;
+            }
+
+            // Cambiar fondo cada 30 segundos (opcional)
+            // setInterval(changeBackgroundImage, 30000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Crear Vehículo - Service Coronado{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50/30 to-purple-50/30 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8" data-aos="fade-down">
+            <div class="mb-4 lg:mb-0">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-car-side text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl lg:text-4xl font-black text-gray-800">Nuevo Vehículo</h1>
+                        <p class="text-gray-600">Agrega un nuevo vehículo a la flota de Krazz</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{% url 'lista_vehiculos' %}" class="glass-morphism px-6 py-3 text-gray-700 font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group flex items-center">
+                    <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                    Volver a Vehículos
+                </a>
+            </div>
+        </div>
+
+        <!-- Mensajes de Django -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="animate__animated animate__fadeInDown {% if message.tags == 'success' %}bg-green-50 border-l-4 border-green-500 text-green-700{% elif message.tags == 'error' %}bg-red-50 border-l-4 border-red-500 text-red-700{% else %}bg-blue-50 border-l-4 border-blue-500 text-blue-700{% endif %} p-4 rounded-2xl mb-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 {% if message.tags == 'success' %}bg-green-100 text-green-500{% elif message.tags == 'error' %}bg-red-100 text-red-500{% else %}bg-blue-100 text-blue-500{% endif %} rounded-full flex items-center justify-center mr-3">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-3" data-aos="fade-right">
+                <div class="glass-morphism rounded-3xl shadow-2xl overflow-hidden">
+                    <!-- Form Header -->
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-car text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-black text-white">Información del Vehículo</h2>
+                                <p class="text-blue-100 text-sm">Completa los datos del nuevo vehículo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Body -->
+                    <div class="p-6">
+                        <form method="post" novalidate class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <!-- Error Messages -->
+                            {% if form.errors %}
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl animate__animated animate__shakeX">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-red-800 font-semibold">Corrige los siguientes errores:</h3>
+                                        <ul class="text-red-600 text-sm mt-1 space-y-1">
+                                            {% for field in form %}
+                                                {% for error in field.errors %}
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-chevron-right text-xs mr-2"></i>
+                                                        {{ field.label }}: {{ error }}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endfor %}
+                                            {% for error in form.non_field_errors %}
+                                                <li class="flex items-center">
+                                                    <i class="fas fa-chevron-right text-xs mr-2"></i>
+                                                    {{ error }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Vehicle Identification -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Placa -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">1</span>
+                                        Placa
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.placa }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-id-card text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Formato: ABC-123 o ABC123
+                                    </p>
+                                </div>
+
+                                <!-- Año -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">2</span>
+                                        Año
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.año }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-calendar-alt text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Ejemplo: 2023
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Brand and Model -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Marca -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-purple-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">3</span>
+                                        Marca
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.marca }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-tag text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modelo -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">4</span>
+                                        Modelo
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.modelo }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-cog text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Type and Capacity -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Tipo -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-yellow-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">5</span>
+                                        Tipo de Vehículo
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.tipo }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-car text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Capacidad -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-indigo-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">6</span>
+                                        Capacidad
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.capacidad }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-users text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Número de pasajeros
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Assignment and Maintenance -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Conductor -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">7</span>
+                                        Conductor Asignado
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.conductor }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-id-card-alt text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Opcional - Puede asignarse después
+                                    </p>
+                                </div>
+
+                                <!-- Mantenimiento -->
+                                <div class="space-y-2">
+                                    <label class="flex items-center text-sm font-bold text-gray-700">
+                                        <span class="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">8</span>
+                                        Próximo Mantenimiento
+                                    </label>
+                                    <div class="relative">
+                                        {{ form.mantenimiento_proximo }}
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-tools text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Programar para prevenir problemas
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Status Field (if exists in form) -->
+                            {% if form.activo %}
+                            <div class="space-y-2">
+                                <label class="flex items-center text-sm font-bold text-gray-700">
+                                    <span class="bg-gray-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2">9</span>
+                                    Estado del Vehículo
+                                </label>
+                                <div class="relative">
+                                    {{ form.activo }}
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-toggle-on text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 flex items-center">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Activar/Desactivar el vehículo en el sistema
+                                </p>
+                            </div>
+                            {% endif %}
+
+                            <!-- Form Actions -->
+                            <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                                <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 flex-1 py-4 text-white font-bold rounded-2xl text-lg group shadow-lg hover:shadow-xl transition-all duration-300">
+                                    <i class="fas fa-save mr-3 group-hover:rotate-12 transition-transform"></i>
+                                    Guardar Vehículo
+                                </button>
+                                <a href="{% url 'lista_vehiculos' %}" class="glass-morphism px-8 py-4 text-gray-700 font-bold rounded-2xl text-lg border-2 border-white/30 hover:border-gray-300 transition-all duration-300 group text-center shadow-lg hover:shadow-xl">
+                                    <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Information -->
+            <div class="lg:col-span-1" data-aos="fade-left" data-aos-delay="200">
+                <!-- Quick Tips -->
+                <div class="glass-morphism rounded-3xl p-6 shadow-2xl mb-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-800">Consejos Rápidos</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-blue-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">La placa debe ser única en el sistema</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">El año debe estar entre 1990 y el actual</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-purple-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">La capacidad determina los pasajeros</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-check text-yellow-500 text-xs"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Programa mantenimiento preventivo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="glass-morphism rounded-3xl p-6 shadow-2xl mb-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-800">Estadísticas</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
+                            <span class="text-sm font-semibold text-blue-700">Vehículos Totales</span>
+                            <span class="text-lg font-black text-blue-600">{{ total_vehiculos|default:"0" }}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-xl">
+                            <span class="text-sm font-semibold text-green-700">Vehículos Activos</span>
+                            <span class="text-lg font-black text-green-600">{{ vehiculos_activos|default:"0" }}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-yellow-50 rounded-xl">
+                            <span class="text-sm font-semibold text-yellow-700">Con Mantenimiento</span>
+                            <span class="text-lg font-black text-yellow-600">{{ vehiculos_mantenimiento|default:"0" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Types Info -->
+                <div class="glass-morphism rounded-3xl p-6 shadow-2xl">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-car-side text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-800">Tipos de Vehículos</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
+                            <span class="text-sm font-semibold text-blue-700">Sedán</span>
+                            <span class="text-xs font-black text-blue-600">4-5 pers</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-xl">
+                            <span class="text-sm font-semibold text-green-700">SUV</span>
+                            <span class="text-xs font-black text-green-600">5-7 pers</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                            <span class="text-sm font-semibold text-purple-700">Van</span>
+                            <span class="text-xs font-black text-purple-600">8-15 pers</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-yellow-50 rounded-xl">
+                            <span class="text-sm font-semibold text-yellow-700">Bus</span>
+                            <span class="text-xs font-black text-yellow-600">16+ pers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom form styles */
+.form-control, .form-select {
+    width: 100%;
+    padding: 1rem 2.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+}
+
+/* Glass effect */
+.glass-morphism {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-morphism:hover {
+    transform: translateY(-2px);
+}
+
+/* Custom styles for form icons */
+.relative .form-control, .relative .form-select {
+    padding-left: 3rem;
+}
+
+/* Checkbox styling */
+.form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form submission animation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = `
+                <div class="flex items-center justify-center">
+                    <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                    Guardando vehículo...
+                </div>
+            `;
+            submitBtn.disabled = true;
+            
+            // Revert after 5 seconds if still processing (fallback)
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 5000);
+        });
+    }
+
+    // Plate formatting
+    const placaField = document.querySelector('[name="placa"]');
+    if (placaField) {
+        placaField.addEventListener('input', function() {
+            // Convert to uppercase
+            this.value = this.value.toUpperCase();
+            
+            // Auto-format plate (ABC-123 format)
+            let value = this.value.replace(/[^A-Z0-9]/g, '');
+            if (value.length > 3) {
+                value = value.substring(0, 3) + '-' + value.substring(3, 6);
+            }
+            this.value = value;
+        });
+    }
+
+    // Year validation
+    const añoField = document.querySelector('[name="año"]');
+    if (añoField) {
+        añoField.addEventListener('blur', function() {
+            const currentYear = new Date().getFullYear();
+            const inputYear = parseInt(this.value);
+            
+            if (isNaN(inputYear) || inputYear < 1990 || inputYear > currentYear) {
+                this.classList.remove('border-green-300');
+                this.classList.add('border-red-300');
+            } else {
+                this.classList.remove('border-red-300');
+                this.classList.add('border-green-300');
+            }
+        });
+    }
+
+    // Capacity suggestions based on vehicle type
+    const tipoField = document.querySelector('[name="tipo"]');
+    const capacidadField = document.querySelector('[name="capacidad"]');
+    
+    if (tipoField && capacidadField) {
+        tipoField.addEventListener('change', function() {
+            const capacitySuggestions = {
+                'sedan': '4',
+                'suv': '6', 
+                'van': '12',
+                'bus': '30',
+                'camioneta': '5',
+                'deportivo': '2',
+                'limusina': '8',
+                'motocicleta': '2'
+            };
+            
+            const suggestedCapacity = capacitySuggestions[this.value];
+            if (suggestedCapacity && !capacidadField.value) {
+                capacidadField.value = suggestedCapacity;
+                capacidadField.classList.add('border-green-300');
+            }
+        });
+    }
+
+    // Set default date for maintenance (30 days from now)
+    const mantenimientoField = document.querySelector('[name="mantenimiento_proximo"]');
+    if (mantenimientoField && !mantenimientoField.value) {
+        const today = new Date();
+        const nextMonth = new Date(today);
+        nextMonth.setDate(today.getDate() + 30);
+        
+        // Format as YYYY-MM-DD
+        const formattedDate = nextMonth.toISOString().split('T')[0];
+        mantenimientoField.value = formattedDate;
+    }
+
+    // Real-time validation feedback
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        // Add focus effects
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('ring-4', 'ring-blue-100');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('ring-4', 'ring-blue-100');
+        });
+        
+        // Basic validation for required fields
+        if (input.hasAttribute('required')) {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.classList.add('border-red-300');
+                } else {
+                    this.classList.remove('border-red-300');
+                    this.classList.add('border-green-300');
+                }
+            });
+        }
+    });
+
+    // Auto-focus on plate field
+    if (placaField) {
+        placaField.focus();
+    }
+});
+</script>
+{% endblock %}

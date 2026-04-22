@@ -1,0 +1,602 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lista de Reservas - Service Coronado{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50/30 to-purple-50/30 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8" data-aos="fade-down">
+            <div class="mb-4 lg:mb-0">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-calendar-alt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl lg:text-4xl font-black text-gray-800">Gestión de Reservas</h1>
+                        <p class="text-gray-600">Administra y supervisa todas las reservas del sistema</p>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'crear_reserva' %}" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 px-6 py-3 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <i class="fas fa-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                Nueva Reserva
+            </a>
+        </div>
+
+        <!-- Mensajes de Django -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="animate__animated animate__fadeInDown {% if message.tags == 'success' %}bg-green-50 border-l-4 border-green-500 text-green-700{% elif message.tags == 'error' %}bg-red-50 border-l-4 border-red-500 text-red-700{% else %}bg-blue-50 border-l-4 border-blue-500 text-blue-700{% endif %} p-4 rounded-2xl mb-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 {% if message.tags == 'success' %}bg-green-100 text-green-500{% elif message.tags == 'error' %}bg-red-100 text-red-500{% else %}bg-blue-100 text-blue-500{% endif %} rounded-full flex items-center justify-center mr-3">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-aos="fade-up">
+            <!-- Total Reservas -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Total Reservas</p>
+                        <h3 class="text-3xl font-black text-gray-800 mt-2">{{ reservas.count }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-calendar text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-500 text-sm">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    <span>Creciendo constantemente</span>
+                </div>
+            </div>
+
+            <!-- Pendientes -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Pendientes</p>
+                        <h3 class="text-3xl font-black text-yellow-600 mt-2">{{ pendientes|default:"0" }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-yellow-500 text-sm">
+                    <i class="fas fa-hourglass-half mr-1"></i>
+                    <span>Esperando confirmación</span>
+                </div>
+            </div>
+
+            <!-- Confirmadas -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Confirmadas</p>
+                        <h3 class="text-3xl font-black text-green-600 mt-2">{{ confirmadas|default:"0" }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-500 text-sm">
+                    <i class="fas fa-check mr-1"></i>
+                    <span>Listas para viajar</span>
+                </div>
+            </div>
+
+            <!-- Ingresos Totales -->
+            <div class="glass-morphism rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-semibold">Ingresos Totales</p>
+                        <h3 class="text-3xl font-black text-purple-600 mt-2">${{ ingresos_totales|default:"0" }}</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-dollar-sign text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-purple-500 text-sm">
+                    <i class="fas fa-trending-up mr-1"></i>
+                    <span>Ganancias acumuladas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="glass-morphism rounded-3xl shadow-2xl overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+            <!-- Table Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-list text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-black text-white">Todas las Reservas</h2>
+                            <p class="text-blue-100 text-sm">{{ reservas.count }} reserva{{ reservas.count|pluralize }} en el sistema</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <input type="text" id="search-input" name="q" value="{{ query }}" placeholder="Buscar reserva..." 
+                                   class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
+                            <i class="fas fa-search absolute right-3 top-3 text-blue-200"></i>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <select id="status-filter" class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white">
+                                <option value="">Todos los estados</option>
+                                <option value="pendiente" {% if estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                                <option value="confirmada" {% if estado == 'confirmada' %}selected{% endif %}>Confirmada</option>
+                                <option value="en_progreso" {% if estado == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                                <option value="completada" {% if estado == 'completada' %}selected{% endif %}>Completada</option>
+                                <option value="cancelada" {% if estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Body -->
+            <div class="p-6">
+                {% if reservas %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">ID Reserva</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Cliente</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Conductor</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Vehículo</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Ruta</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Fecha Viaje</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Monto</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Estado</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Registro</th>
+                                <th class="pb-4 text-left text-sm font-bold text-gray-700">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for reserva in reservas %}
+                            <tr class="hover:bg-blue-50/30 transition-colors duration-200 group">
+                                <!-- ID Reserva -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                                            <span class="text-white text-sm font-bold">#{{ reserva.id }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Cliente -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-user text-blue-500 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                                {{ reserva.cliente.nombre }}
+                                            </h3>
+                                            <p class="text-xs text-gray-500">{{ reserva.cliente.telefono }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Conductor -->
+                                <td class="py-4">
+                                    <div class="space-y-2">
+                                        <div class="font-bold text-gray-800">{{ reserva.conductor.nombre }}</div>
+                                        <div class="flex items-center text-xs text-gray-500">
+                                            <i class="fas fa-id-card text-green-500 mr-1"></i>
+                                            {{ reserva.conductor.licencia }}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Vehículo -->
+                                <td class="py-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <div class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs font-mono font-bold">
+                                                {{ reserva.vehiculo.placa }}
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-gray-600">
+                                            {{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo }}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Ruta -->
+                                <td class="py-4">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-map-marker-alt text-xs mr-2 text-red-500"></i>
+                                            <span class="max-w-[120px] truncate">{{ reserva.origen }}</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-flag-checkered text-xs mr-2 text-green-500"></i>
+                                            <span class="max-w-[120px] truncate">{{ reserva.destino }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Fecha Viaje -->
+                                <td class="py-4">
+                                    <div class="text-sm text-gray-600">
+                                        <div>{{ reserva.fecha_viaje|date:"d/m/Y" }}</div>
+                                        <div class="text-xs text-gray-400">{{ reserva.fecha_viaje|date:"H:i" }}</div>
+                                    </div>
+                                </td>
+
+                                <!-- Monto -->
+                                <td class="py-4">
+                                    <div class="text-lg font-black text-green-600">
+                                        ${{ reserva.monto }}
+                                    </div>
+                                    {% if reserva.distancia_km %}
+                                    <div class="text-xs text-gray-500">
+                                        {{ reserva.distancia_km }} km
+                                    </div>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Estado -->
+                                <td class="py-4">
+                                    {% if reserva.estado == 'completada' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                        <i class="fas fa-check-circle text-[8px] mr-1"></i>
+                                        Completada
+                                    </span>
+                                    {% elif reserva.estado == 'confirmada' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                                        <i class="fas fa-check text-[8px] mr-1"></i>
+                                        Confirmada
+                                    </span>
+                                    {% elif reserva.estado == 'en_progreso' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
+                                        <i class="fas fa-car text-[8px] mr-1"></i>
+                                        En Progreso
+                                    </span>
+                                    {% elif reserva.estado == 'pendiente' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
+                                        <i class="fas fa-clock text-[8px] mr-1"></i>
+                                        Pendiente
+                                    </span>
+                                    {% elif reserva.estado == 'cancelada' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                        <i class="fas fa-times text-[8px] mr-1"></i>
+                                        Cancelada
+                                    </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Registro -->
+                                <td class="py-4">
+                                    <div class="text-sm text-gray-600">
+                                        <div>{{ reserva.creado|date:"d/m/Y" }}</div>
+                                        <div class="text-xs text-gray-400">{{ reserva.creado|date:"H:i" }}</div>
+                                    </div>
+                                </td>
+
+                                <!-- Acciones (AHORA FUNCIONALES) -->
+                                <td class="py-4">
+                                    <div class="flex items-center space-x-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
+                                        <a href="{% url 'editar_reserva' reserva.id %}" class="w-8 h-8 bg-green-100 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors group/tooltip relative">
+                                            <i class="fas fa-edit text-green-500 group-hover/tooltip:text-white text-xs"></i>
+                                            <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap">
+                                                Editar
+                                            </span>
+                                        </a>
+                                        <a href="{% url 'eliminar_reserva' reserva.id %}" class="w-8 h-8 bg-red-100 hover:bg-red-500 rounded-lg flex items-center justify-center transition-colors group/tooltip relative">
+                                            <i class="fas fa-trash text-red-500 group-hover/tooltip:text-white text-xs"></i>
+                                            <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap">
+                                                Eliminar
+                                            </span>
+                                        </a>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-200">
+                    <div class="text-sm text-gray-600">
+                        Mostrando <span class="font-semibold">1-{{ reservas.count }}</span> de <span class="font-semibold">{{ reservas.count }}</span> reservas
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-chevron-left text-gray-600 text-sm"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center font-semibold">
+                            1
+                        </button>
+                        <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-chevron-right text-gray-600 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-12" data-aos="zoom-in">
+                    <div class="w-24 h-24 bg-gradient-to-br from-blue-200 to-purple-200 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-calendar-times text-blue-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-600 mb-3">No hay reservas registradas</h3>
+                    <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                        Comienza gestionando tus reservas de transporte. Crea tu primera reserva para empezar a operar.
+                    </p>
+                    <a href="{% url 'crear_reserva' %}" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 inline-flex items-center px-6 py-3 text-white font-bold rounded-2xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        <i class="fas fa-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                        Crear Primera Reserva
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions Footer -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up" data-aos-delay="400">
+            <!-- Export Data -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer" onclick="exportarReservas()">
+                <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-file-export text-blue-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Exportar Lista</h4>
+                <p class="text-gray-600 text-sm">Descarga datos en Excel/PDF</p>
+            </div>
+
+            <!-- Schedule Management -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer" onclick="verCalendario()">
+                <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-alt text-green-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Calendario</h4>
+                <p class="text-gray-600 text-sm">Ver calendario de reservas</p>
+            </div>
+
+            <!-- Performance Reports -->
+            <div class="glass-morphism rounded-3xl p-6 text-center card-hover cursor-pointer" onclick="verReportes()">
+                <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chart-pie text-purple-500 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-2">Reportes</h4>
+                <p class="text-gray-600 text-sm">Reportes de desempeño</p>
+            </div>
+        </div>
+
+        <!-- Status Distribution -->
+        <div class="mt-8 glass-morphism rounded-3xl p-6 shadow-2xl" data-aos="fade-up" data-aos-delay="600">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-chart-bar text-white text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-gray-800">Distribución por Estado</h3>
+                    <p class="text-gray-600 text-sm">Estado actual de todas las reservas</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-2xl">
+                    <div class="text-2xl font-black text-blue-600">{{ pendientes|default:"0" }}</div>
+                    <div class="text-sm text-blue-700 font-semibold">Pendientes</div>
+                    <div class="text-xs text-blue-500">Esperando confirmar</div>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-2xl">
+                    <div class="text-2xl font-black text-green-600">{{ confirmadas|default:"0" }}</div>
+                    <div class="text-sm text-green-700 font-semibold">Confirmadas</div>
+                    <div class="text-xs text-green-500">Listas para viajar</div>
+                </div>
+                <div class="text-center p-4 bg-yellow-50 rounded-2xl">
+                    <div class="text-2xl font-black text-yellow-600">{{ en_progreso|default:"0" }}</div>
+                    <div class="text-sm text-yellow-700 font-semibold">En Progreso</div>
+                    <div class="text-xs text-yellow-500">Viajes activos</div>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-2xl">
+                    <div class="text-2xl font-black text-purple-600">{{ completadas|default:"0" }}</div>
+                    <div class="text-sm text-purple-700 font-semibold">Completadas</div>
+                    <div class="text-xs text-purple-500">Viajes finalizados</div>
+                </div>
+                <div class="text-center p-4 bg-red-50 rounded-2xl">
+                    <div class="text-2xl font-black text-red-600">{{ canceladas|default:"0" }}</div>
+                    <div class="text-sm text-red-700 font-semibold">Canceladas</div>
+                    <div class="text-xs text-red-500">Reservas canceladas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom table styles */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th, td {
+    padding: 1rem 0.5rem;
+}
+
+th:first-child, td:first-child {
+    padding-left: 1rem;
+}
+
+th:last-child, td:last-child {
+    padding-right: 1rem;
+}
+
+/* Smooth transitions */
+.glass-morphism {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects for cards */
+.card-hover:hover {
+    transform: translateY(-4px);
+}
+
+/* Tooltip styling */
+.relative .absolute {
+    z-index: 10;
+    pointer-events: none;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('search-input');
+    const tableRows = document.querySelectorAll('tbody tr');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Filter by status
+    const statusSelect = document.getElementById('status-filter');
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+            const status = this.value;
+            const url = new URL(window.location.href);
+            
+            if (status) {
+                url.searchParams.set('estado', status);
+            } else {
+                url.searchParams.delete('estado');
+            }
+            
+            window.location.href = url.toString();
+        });
+    }
+
+    // Add smooth animations to table rows
+    tableRows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+        row.classList.add('animate__animated', 'animate__fadeInUp');
+    });
+
+    // Tooltip functionality
+    const tooltipButtons = document.querySelectorAll('button[class*="group/tooltip"], a[class*="group/tooltip"]');
+    tooltipButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            const tooltip = this.querySelector('span');
+            if (tooltip) {
+                tooltip.style.opacity = '1';
+            }
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            const tooltip = this.querySelector('span');
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+            }
+        });
+    });
+
+    // Auto-submit search form when typing
+    let searchTimeout;
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                this.form.submit();
+            }
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (this.value.length >= 3 || this.value.length === 0) {
+                    this.form.submit();
+                }
+            }, 800);
+        });
+    }
+});
+
+// Función para ver detalles (puedes implementar modal o redirección)
+function verDetalles(reservaId) {
+    // Aquí puedes implementar un modal o redirección
+    // Por ahora, redirigir a la vista de edición que ya muestra detalles
+    window.location.href = `/reservas/editar/${reservaId}/`;
+}
+
+// Funciones para las acciones rápidas
+function exportarReservas() {
+    alert('Función de exportación en desarrollo');
+    // Implementar lógica de exportación aquí
+}
+
+function verCalendario() {
+    alert('Calendario de reservas en desarrollo');
+    // Implementar vista de calendario aquí
+}
+
+function verReportes() {
+    alert('Reportes de desempeño en desarrollo');
+    // Implementar vista de reportes aquí
+}
+
+// Confirmación para eliminar (ya está en el enlace, pero puedes agregar JS adicional)
+function confirmarEliminar(e, reservaId, clienteNombre) {
+    if (!confirm(`¿Estás seguro de eliminar la reserva #${reservaId} del cliente ${clienteNombre}?`)) {
+        e.preventDefault();
+        return false;
+    }
+    return true;
+}
+
+// Pagination functions
+function goToPage(page) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page);
+    window.location.href = url.toString();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl+F para buscar
+    if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    }
+    
+    // Ctrl+N para nueva reserva
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        window.location.href = "{% url 'crear_reserva' %}";
+    }
+});
+</script>
+{% endblock %}

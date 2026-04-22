@@ -1,0 +1,34 @@
+# Entornos virtuales
+ent/
+hol/ent/
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+*.log
+staticfiles/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Archivos sensibles
+.env
+.env.*
+
+# Migraciones compiladas
+**/__pycache__/
+
+# Otros
+*.swp
